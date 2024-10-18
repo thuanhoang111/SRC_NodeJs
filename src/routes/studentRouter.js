@@ -1,0 +1,10 @@
+import express from "express";
+import { studentController } from "../app/controller/studentController.js";
+const routerStudent = express.Router();
+routerStudent.post("/add", studentController.add);
+routerStudent.use("/all", studentController.all);
+routerStudent.use("/:id", studentController.findById);
+routerStudent.put("/:id", studentController.updateById);
+routerStudent.delete("/:id", studentController.deleteById);
+routerStudent.use("/", studentController.index);
+export { routerStudent };
