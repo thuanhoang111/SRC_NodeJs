@@ -4,10 +4,11 @@ import APIFeature from "../../utils/utis.js";
 class StudentController {
   async index(req, res) {
     try {
-      const apiFeatures = await new APIFeature(StudentModel.find(), req.query)
+      const apiFeatures = new APIFeature(await StudentModel.find({}), req.query)
         .search()
         .filter()
         .sorting();
+
       let students = apiFeatures.query;
       const filteredCount = students.length;
       apiFeatures.pagination();
@@ -27,25 +28,25 @@ class StudentController {
   async findById(req, res) {
     try {
       const studentId = req.params.id;
-      const studentMain = StudentModel.findById(studentId);
+      const studentMain = await StudentModel.findById(studentId);
       res.status(200).json(studentMain);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
-  add(req, res) {
+  async add(req, res) {
     try {
       console.log(req);
-      const studentMain = StudentModel.create(req.body);
+      const studentMain = await StudentModel.create(req.body);
       res.status(201).json({ message: "Thêm mới thành công " });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
-  deleteById(req, res) {
+  async deleteById(req, res) {
     try {
       const studentId = req.params.id;
-      const statusDelete = StudentModel.deleteOne({ _id: studentId });
+      const statusDelete = await StudentModel.deleteOne({ _id: studentId });
       res
         .status(200)
         .json({ message: `Đã xóa thành công : ${statusDelete.deletedCount}` });
@@ -53,10 +54,13 @@ class StudentController {
       res.status(500).json({ message: error.message });
     }
   }
-  updateById(req, res) {
+  async updateById(req, res) {
     try {
       const studentId = req.params.id;
-      const studentMain = StudentModel.findByIdAndUpdate(studentId, req.body);
+      const studentMain = await StudentModel.findByIdAndUpdate(
+        studentId,
+        req.body
+      );
 
       res.status(200).json(studentMain);
     } catch (error) {
