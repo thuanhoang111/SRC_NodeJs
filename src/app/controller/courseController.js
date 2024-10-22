@@ -3,14 +3,14 @@ import { courseModel } from "../models/courseModel.js";
 class coursesController {
   async index(req, res) {
     try {
-      const apiFeatures = new APIFeature(await courseModel.find({}), req.query)
+      const apiFeatures = new APIFeature(courseModel.find({}), req.query)
         .search()
         .filter()
         .sorting();
-      let students = apiFeatures.query;
+      let students = await apiFeatures.query;
       const filteredCount = students.length;
       apiFeatures.pagination();
-      students = apiFeatures.query.clone();
+      students = await apiFeatures.query.clone();
 
       res.status(200).json({
         filteredCount,
@@ -26,16 +26,15 @@ class coursesController {
   async findById(req, res) {
     try {
       const courseId = req.params.id;
-      const studentMain = courseModel.findById(courseId);
-      res.status(200).json(studentMain);
+      const courseMain = courseModel.findById(courseId);
+      res.status(200).json(courseMain);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
   async add(req, res) {
     try {
-      console.log(req);
-      const studentMain = await courseModel.create(req.body);
+      const courseMain = await courseModel.create(req.body);
       res.status(201).json({ message: "Thêm mới thành công " });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -55,12 +54,12 @@ class coursesController {
   async updateById(req, res) {
     try {
       const courseId = req.params.id;
-      const studentMain = await courseModel.findByIdAndUpdate(
+      const courseMain = await courseModel.findByIdAndUpdate(
         courseId,
         req.body
       );
 
-      res.status(200).json(studentMain);
+      res.status(200).json(courseMain);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

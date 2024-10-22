@@ -1,25 +1,23 @@
 import { StudentModel } from "../models/studentModel.js";
 import APIFeature from "../../utils/utis.js";
-
 class StudentController {
   async index(req, res) {
     try {
-      const apiFeatures = new APIFeature(await StudentModel.find({}), req.query)
+      const apiFeatures = new APIFeature(StudentModel.find({}), req.query)
         .search()
         .filter()
         .sorting();
-
-      let students = apiFeatures.query;
+      let students = await apiFeatures.query;
       const filteredCount = students.length;
       apiFeatures.pagination();
-      students = apiFeatures.query.clone();
+      students = await apiFeatures.query.clone();
 
       res.status(200).json({
         filteredCount,
         students,
       });
     } catch (error) {
-      console.log("indeex");
+      console.log("index");
 
       res.status(400).json({ message: error.message });
     }
@@ -36,7 +34,6 @@ class StudentController {
   }
   async add(req, res) {
     try {
-      console.log(req);
       const studentMain = await StudentModel.create(req.body);
       res.status(201).json({ message: "Thêm mới thành công " });
     } catch (error) {
@@ -46,6 +43,10 @@ class StudentController {
   async deleteById(req, res) {
     try {
       const studentId = req.params.id;
+      console.log(
+        "🚀 ~ StudentController ~ deleteById ~ studentId:",
+        studentId
+      );
       const statusDelete = await StudentModel.deleteOne({ _id: studentId });
       res
         .status(200)
@@ -57,6 +58,10 @@ class StudentController {
   async updateById(req, res) {
     try {
       const studentId = req.params.id;
+      console.log(
+        "🚀 ~ StudentController ~ updateById ~ studentId:",
+        studentId
+      );
       const studentMain = await StudentModel.findByIdAndUpdate(
         studentId,
         req.body
@@ -70,7 +75,7 @@ class StudentController {
   async all(req, res) {
     const result = await StudentModel.find({});
     console.log("🚀 ~ StudentController ~ all ~ result:", result);
-    res.status(200).json({ asda: result });
+    res.status(200).json(result);
   }
 }
 const studentController = new StudentController();
