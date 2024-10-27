@@ -1,21 +1,9 @@
 import express from "express";
-import { authenticateToken, generateAccessToken } from "../utils/JWT.js";
+import { authenticateToken } from "../utils/JWT.js";
+import { auth } from "../app/controller/authController.js";
 const loginRouter = express.Router();
 
-loginRouter.post("/", (req, res) => {
-  const { userId, password } = req.body;
-  const token = generateAccessToken({
-    userId,
-    password,
-  });
-  res.status(200).json({ token });
-});
-loginRouter.get("/verify", authenticateToken, (req, res) => {
-  // const { userId, password } = req.body;
-  // const token = generateAccessToken({
-  //   userId,
-  //   password,
-  // });
-  res.status(200).json({ result: req.inforUser });
-});
+loginRouter.post("/", auth.login);
+loginRouter.get("/verify", authenticateToken, auth.verify);
+loginRouter.post("/token", auth.refreshToken);
 export { loginRouter };

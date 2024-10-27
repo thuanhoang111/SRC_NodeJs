@@ -6,6 +6,12 @@ function generateAccessToken(body) {
     // algorithm: "RS256",
   });
 }
+function generateRefreshToken(body) {
+  return jwt.sign(body, process.env.JWT_REFRESH_KEY, {
+    expiresIn: "1h",
+    // algorithm: "RS256",
+  });
+}
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
@@ -22,4 +28,4 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-export { generateAccessToken, authenticateToken };
+export { generateAccessToken, authenticateToken, generateRefreshToken };
